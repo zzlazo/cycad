@@ -8,9 +8,14 @@ While the original Forge used local storage, Cycad has been migrated to a server
 
 Cycad is built for:
 
-- Managing Narrative Events: Creating and organizing story branches or random encounters.
-- Physical games: Randomly selecting battles, NPCs, or plot twists for a more dynamic experience.
-- Campaign Tracking: Keeping the flow of your game organized and accessible.
+- Language Learning: Build real-world fluency by combining "situations" and "challenges."
+  - Example: Pair "Airport" with "Missing Reservation" to practice immediate problem-solving in your target language.
+- Programming Patterns: Sharpen your software design intuition through rapid-fire coding drills.
+  - Example: Draw a "Code Smell" like "Deeply Nested Loops" and decide which "Refactoring Technique" (e.g., "Early Return") to apply.
+- Physical games: Help Game Masters create unpredictable story twists and dynamic encounters on the fly.
+  - Example: Generate random "NPC Traits" or "Environmental Events" and use the Image Export feature to share them with players instantly.
+- Fitness (Personal Bootcamp): Add a layer of gamification to your workouts by randomizing exercises and intensity.
+  - Example: Pair "Squats" with "Until Failure" and track your progress over time using the built-in Activity Logging.
 
 ## Features
 
