@@ -1,6 +1,6 @@
-CREATE OR REPLACE FUNCTION rpc_create_series (title text, concepts jsonb) RETURNS integer AS $$
+CREATE OR REPLACE FUNCTION rpc_create_series (title text, concepts jsonb) RETURNS uuid AS $$
 DECLARE
-  new_series_id int;
+  new_series_id uuid;
   current_utc_time timestamp := now() at time zone 'utc';
   p_title text := title;
   v_user_id UUID := auth.uid();
@@ -12,7 +12,7 @@ BEGIN
   INSERT INTO card_concepts (series_id, code_id, concept, author_id, created_at, updated_at)
   SELECT 
     new_series_id, 
-    ((elem -> 'code') ->> 'id')::int, 
+    ((elem -> 'code') ->> 'id')::bigint, 
     (elem ->> 'concept'),            
     v_user_id, 
     current_utc_time, 

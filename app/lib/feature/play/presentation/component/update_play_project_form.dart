@@ -17,7 +17,7 @@ class UpdatePlayProjectForm extends StatelessWidget {
   final GlobalKey<FormState> formKey;
   final List<CardConceptSeriesOverview> seriesList;
   final void Function(String text)? onTitleChanged;
-  final void Function(int? id)? onSeriesChanged;
+  final void Function(String? id)? onSeriesChanged;
 
   @override
   Widget build(BuildContext context) {

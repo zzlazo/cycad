@@ -33,7 +33,7 @@ Future<GetCardConceptSeriesListResponse> getConceptSeriesList(Ref ref) async {
 }
 
 @riverpod
-GetCardConceptSeriesRequest getCardConceptSeriesRequest(Ref ref, int id) {
+GetCardConceptSeriesRequest getCardConceptSeriesRequest(Ref ref, String id) {
   return GetCardConceptSeriesRequest(
     id: id,
     userId: ref.read(currentPlayingUserProvider).id,
@@ -41,7 +41,7 @@ GetCardConceptSeriesRequest getCardConceptSeriesRequest(Ref ref, int id) {
 }
 
 @riverpod
-Future<CardConceptSeries> getConceptSeries(Ref ref, int id) async {
+Future<CardConceptSeries> getConceptSeries(Ref ref, String id) async {
   final response = await ref
       .read(conceptSeriesRepositoryProvider)
       .getSeries(ref.watch(getCardConceptSeriesRequestProvider(id)));
@@ -104,7 +104,7 @@ Future<GetCardConceptSeriesPresetListResponse> getCardConceptSeriesPresetList(
 }
 
 @riverpod
-Future<bool> checkExistSeriesPlay(Ref ref, int id) async {
+Future<bool> checkExistSeriesPlay(Ref ref, String id) async {
   final response = await ref
       .read(conceptSeriesRepositoryProvider)
       .checkExistSeriesPlay(CheckExistSeriesPlayRequest(id: id));

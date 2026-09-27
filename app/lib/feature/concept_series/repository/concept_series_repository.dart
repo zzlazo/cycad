@@ -19,7 +19,7 @@ abstract class ConceptSeriesRepository {
     GetCardConceptSeriesListRequest request,
   );
   Future<CardConceptSeries> getSeries(GetCardConceptSeriesRequest request);
-  Future<int> createSeries(CreateCardConceptSeriesRequest request);
+  Future<String> createSeries(CreateCardConceptSeriesRequest request);
   Future<void> updateSeries(UpdateCardConceptSeriesRequest request);
   Future<void> deleteSeries(DeleteCardConceptSeriesRequest request);
   Future<GetCardConceptSeriesPresetListResponse> getPresetList();
@@ -85,16 +85,16 @@ class ConceptSeriesServerRepository implements ConceptSeriesRepository {
   }
 
   @override
-  Future<int> createSeries(CreateCardConceptSeriesRequest request) async {
-    return await _handle<int>(() async {
+  Future<String> createSeries(CreateCardConceptSeriesRequest request) async {
+    return await _handle<String>(() async {
       final response = await _client.rpc(
         ServerFunctions.rpcCreateSeries.functionName,
         params: request.toJson(),
       );
-      if (response is int) {
+      if (response is String) {
         return response;
       }
-      throw ValidationException(message: "Creating series response is not int");
+      throw ValidationException(message: "Creating series response is not String");
     }, "Error occurred while creating series");
   }
 

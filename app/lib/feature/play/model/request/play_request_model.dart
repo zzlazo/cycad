@@ -49,7 +49,7 @@ abstract class CreatePlayProjectRequest with _$CreatePlayProjectRequest {
   const factory CreatePlayProjectRequest({
     required String playId,
     required String title,
-    required int seriesId,
+    required String seriesId,
   }) = _CreatePlayProjectRequest;
 
   factory CreatePlayProjectRequest.fromJson(Map<String, Object?> json) =>

@@ -1,6 +1,6 @@
-create or replace function rpc_check_exist_series_play (id integer) returns boolean as $$
+create or replace function rpc_check_exist_series_play (id uuid) returns boolean as $$
 declare
-p_id integer := id;
+p_id uuid := id;
 begin
   return exists (
     select 1

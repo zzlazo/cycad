@@ -59,7 +59,7 @@ class SelectSeriesScreen extends HookConsumerWidget {
                 .toList(),
             onTap: (index) async {
               if (!context.mounted) return;
-              final int tapId = value.series[index].id;
+              final String tapId = value.series[index].id;
               await UpdateSeriesRoute(tapId).push(context);
               ref.invalidate(getConceptSeriesListProvider);
             },

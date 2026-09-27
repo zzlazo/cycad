@@ -72,7 +72,7 @@ abstract class PlayProjectOverview with _$PlayProjectOverview {
   const factory PlayProjectOverview({
     required String id,
     required String title,
-    required int seriesId,
+    required String seriesId,
     required DateTime updatedAt,
   }) = _PlayProjectOverview;
 
@@ -102,6 +102,6 @@ abstract class PlayProject with _$PlayProject {
 
 @freezed
 abstract class UpdateProjectFormModel with _$UpdateProjectFormModel {
-  const factory UpdateProjectFormModel({String? title, int? seriesId}) =
+  const factory UpdateProjectFormModel({String? title, String? seriesId}) =
       _UpdateProjectFormModel;
 }

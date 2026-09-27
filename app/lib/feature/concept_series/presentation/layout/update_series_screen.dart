@@ -22,7 +22,7 @@ import "delete_series_dialog.dart";
 class UpdateSeriesScreen extends HookConsumerWidget {
   const UpdateSeriesScreen({super.key, required this.id});
 
-  final int id;
+  final String id;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -30,7 +30,7 @@ class UpdateSeriesScreen extends HookConsumerWidget {
     final formState = useState(
       CardConceptSeries(
         overview: CardConceptSeriesOverview(
-          id: 0,
+          id: "",
           title: "",
           updatedAt: ref.watch(currentTimeProvider),
         ),

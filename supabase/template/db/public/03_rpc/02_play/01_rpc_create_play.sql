@@ -1,4 +1,4 @@
-create or replace function rpc_create_play (play_id uuid, title text, series_id integer) RETURNS void as $$
+create or replace function rpc_create_play (play_id uuid, title text, series_id uuid) RETURNS void as $$
 DECLARE
   current_utc_time timestamp := now() at time zone 'utc';
   p_id ALIAS for play_id;

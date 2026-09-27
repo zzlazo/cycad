@@ -30,7 +30,7 @@ abstract class GetCardConceptSeriesListResponse
 @freezed
 abstract class GetCardConceptSeriesRequest with _$GetCardConceptSeriesRequest {
   const factory GetCardConceptSeriesRequest({
-    required int id,
+    required String id,
     required String userId,
   }) = _GetCardConceptSeriesRequest;
 
@@ -64,7 +64,7 @@ abstract class CreateCardConceptSeriesRequest
 @freezed
 abstract class CreateCardConceptSeriesOverviewResponse
     with _$CreateCardConceptSeriesOverviewResponse {
-  const factory CreateCardConceptSeriesOverviewResponse({required int id}) =
+  const factory CreateCardConceptSeriesOverviewResponse({required String id}) =
       _CreateCardConceptSeriesOverviewResponse;
 
   factory CreateCardConceptSeriesOverviewResponse.fromJson(
@@ -76,7 +76,7 @@ abstract class CreateCardConceptSeriesOverviewResponse
 abstract class UpdateCardConceptSeriesRequest
     with _$UpdateCardConceptSeriesRequest {
   const factory UpdateCardConceptSeriesRequest({
-    required int id,
+    required String id,
     required String title,
     required List<CardConcept> concepts,
   }) = _UpdateCardConceptSeriesRequest;
@@ -88,7 +88,7 @@ abstract class UpdateCardConceptSeriesRequest
 @freezed
 abstract class DeleteCardConceptSeriesRequest
     with _$DeleteCardConceptSeriesRequest {
-  const factory DeleteCardConceptSeriesRequest({required List<int> idList}) =
+  const factory DeleteCardConceptSeriesRequest({required List<String> idList}) =
       _DeleteCardConceptSeriesRequest;
 
   factory DeleteCardConceptSeriesRequest.fromJson(Map<String, Object?> json) =>
@@ -156,7 +156,7 @@ abstract class GetCardConceptSeriesPresetResponse
 
 @freezed
 abstract class CheckExistSeriesPlayRequest with _$CheckExistSeriesPlayRequest {
-  const factory CheckExistSeriesPlayRequest({required int id}) =
+  const factory CheckExistSeriesPlayRequest({required String id}) =
       _CheckExistSeriesPlayRequest;
 
   factory CheckExistSeriesPlayRequest.fromJson(Map<String, Object?> json) =>

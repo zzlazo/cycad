@@ -20,11 +20,11 @@ class CreateSeriesScreen extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final newSeriesId = useState<int?>(null);
+    final newSeriesId = useState<String?>(null);
     final formState = useState(
       CardConceptSeries(
         overview: CardConceptSeriesOverview(
-          id: 0,
+          id: "",
           title: "",
           updatedAt: ref.watch(currentTimeProvider),
         ),
@@ -35,7 +35,7 @@ class CreateSeriesScreen extends HookConsumerWidget {
       if (next.hasValue) {
         formState.value = formState.value.copyWith(
           concepts: next.value!.preset.codes
-              .map((code) => CardConcept(id: 0, code: code, concept: ""))
+              .map((code) => CardConcept(id: "", code: code, concept: ""))
               .toList(),
         );
       }
@@ -69,7 +69,7 @@ class CreateSeriesScreen extends HookConsumerWidget {
               } else {
                 final result = await ref
                     .read(asyncJobDispatcherProvider)
-                    .trackJob<int>(
+                    .trackJob<String>(
                       AsyncJobQueue(
                         id: "create_series_${formState.value.overview.title}}",
                         type: AsyncJobType.modify,

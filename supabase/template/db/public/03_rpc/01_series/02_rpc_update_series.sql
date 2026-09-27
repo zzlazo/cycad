@@ -1,4 +1,4 @@
-CREATE OR REPLACE FUNCTION rpc_update_series (id int, title text, concepts jsonb) RETURNS void AS $$
+CREATE OR REPLACE FUNCTION rpc_update_series (id uuid, title text, concepts jsonb) RETURNS void AS $$
 DECLARE
   current_utc_time timestamp := now() at time zone 'utc';
   p_id ALIAS FOR id;
@@ -15,7 +15,7 @@ BEGIN
   INSERT INTO card_concepts (series_id, code_id, concept, author_id, created_at, updated_at)
   SELECT 
     p_id, 
-    ((elem -> 'code') ->> 'id')::int, 
+    ((elem -> 'code') ->> 'id')::bigint, 
     (elem ->> 'concept'),            
     v_user_id, 
     current_utc_time, 

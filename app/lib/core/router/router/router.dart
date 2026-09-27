@@ -72,7 +72,7 @@ class SelectSeriesRoute extends GoRouteData with _$SelectSeriesRoute {
 class UpdateSeriesRoute extends GoRouteData with _$UpdateSeriesRoute {
   const UpdateSeriesRoute(this.id);
 
-  final int id;
+  final String id;
 
   @override
   Widget build(BuildContext context, GoRouterState state) =>

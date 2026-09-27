@@ -11,7 +11,7 @@ part "concept_series_model.g.dart";
 @freezed
 abstract class CardConceptSeriesOverview with _$CardConceptSeriesOverview {
   const factory CardConceptSeriesOverview({
-    required int id,
+    required String id,
     required String title,
     required DateTime updatedAt,
   }) = _CardConceptSeriesOverview;
@@ -24,7 +24,7 @@ abstract class CardConceptSeriesOverview with _$CardConceptSeriesOverview {
 abstract class CardConceptSeriesOverviewListItemModel
     with _$CardConceptSeriesOverviewListItemModel {
   const factory CardConceptSeriesOverviewListItemModel({
-    required int id,
+    required String id,
     required String title,
     required String updatedAt,
   }) = _CardConceptSeriesOverviewListItemModel;
@@ -77,7 +77,7 @@ abstract class ExportSeriesStyle with _$ExportSeriesStyle {
 @freezed
 abstract class CardConcept with _$CardConcept {
   const factory CardConcept({
-    required int id,
+    required String id,
     required CardCode code,
     required String concept,
   }) = _CardConcept;
