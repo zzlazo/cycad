@@ -1,7 +1,7 @@
 INSERT INTO
     public.card_suits ("id", "name", "value", "position")
 VALUES
-    (1, '♠', 'spade', 1),
-    (2, '♥', 'heart', 2),
+    (1, '♥', 'heart', 2),
+    (2, '♣', 'club', 4),
     (3, '♦', 'diamond', 3),
-    (4, '♣', 'club', 4);
+    (4, '♠', 'spade', 1);
