@@ -1,6 +1,6 @@
 create table public.scenes (
     created_at timestamp with time zone not null default (now() AT TIME ZONE 'utc'),
-    concept_id bigint not null,
+    concept_id uuid not null,
     author_id uuid not null,
     sort_order smallint not null,
     act_id uuid not null,

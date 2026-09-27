@@ -2,7 +2,7 @@ create table public.plays (
     created_at timestamp with time zone not null default (now() AT TIME ZONE 'utc'),
     title text not null default '',
     updated_at timestamp with time zone not null default (now() AT TIME ZONE 'utc'),
-    series_id bigint not null,
+    series_id uuid not null,
     author_id uuid not null,
     id uuid not null default gen_random_uuid(),
     constraint plays_pkey primary key (id),

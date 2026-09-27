@@ -4,7 +4,7 @@ create table public.lines (
     content text not null default '',
     author_id uuid not null,
     id uuid not null default gen_random_uuid(),
-    act_id uuid not null default gen_random_uuid(),
+    act_id uuid not null,
     scene_id uuid null,
     updated_at timestamp with time zone not null default (now() AT TIME ZONE 'utc'),
     constraint lines_pkey primary key (id),

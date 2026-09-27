@@ -5,7 +5,7 @@ create table public.acts (
     author_id uuid not null,
     updated_at timestamp with time zone not null default (now() AT TIME ZONE 'utc'),
     id uuid not null default gen_random_uuid(),
-    play_id uuid not null default gen_random_uuid(),
+    play_id uuid not null,
     constraint acts_pkey primary key (id),
     constraint acts_author_id_fkey foreign KEY (author_id) references auth.users (id),
     constraint acts_play_id_fkey foreign KEY (play_id) references plays (id)
