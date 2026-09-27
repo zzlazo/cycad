@@ -15,8 +15,11 @@ BEGIN
   where act_id = p_act_id;
 
   with random_concepts as (
-    select id, code, concept
-    from view_card_concepts_details
+    select c.id, c.code, c.concept
+    from view_card_concepts_details c
+    inner join plays p on p.series_id = c.series_id
+    inner join acts a on a.play_id = p.id
+    where a.id = p_act_id
     order by random()
     limit p_scene_length
   ),
