@@ -12,3 +12,12 @@ create table public.acts (
 );
 
 ALTER TABLE "public"."acts" ENABLE ROW LEVEL SECURITY;
+
+-- 外部キーの検査は RLS を通らないため、他人のプレイにぶら下げられないよう親の所有者も確かめる
+create policy "Owner can manage own rows" on public.acts
+    for all to authenticated
+    using (author_id = (select auth.uid()))
+    with check (
+        author_id = (select auth.uid())
+        and exists (select 1 from public.plays p where p.id = acts.play_id and p.author_id = (select auth.uid()))
+    );

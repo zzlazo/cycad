@@ -14,27 +14,24 @@ BEGIN
   delete from scenes
   where act_id = p_act_id;
 
-  with random_concepts as (
-    select c.id, c.code, c.concept
+  -- lines の RLS は親の scenes が自分のものかを確かめる。同じ文の CTE で入れた行はその確認から見えないため、文を分ける
+  insert into scenes (id, act_id, sort_order, author_id, concept_id, created_at)
+  select gen_random_uuid(), p_act_id, (row_number() over())+1, v_user_id, r.id, current_utc_time
+  from (
+    select c.id
     from view_card_concepts_details c
     inner join plays p on p.series_id = c.series_id
     inner join acts a on a.play_id = p.id
     where a.id = p_act_id
     order by random()
     limit p_scene_length
-  ),
-  inserted_scenes as (
-        insert into scenes (id, act_id, sort_order, author_id, concept_id, created_at)
-        select gen_random_uuid(), p_act_id, (row_number() over())+1, v_user_id, r.id, current_utc_time
-        from random_concepts r
-        returning id, act_id, sort_order, concept_id, created_at
-  ),
-  inserted_lines as (
-    insert into lines (id, act_id, scene_id, sort_order, content, created_at, author_id)
-    select gen_random_uuid(), p_act_id, s.id, 1, '', current_utc_time, v_user_id
-    from inserted_scenes s
-    returning id, act_id, scene_id, sort_order, content, created_at
-  )
+  ) r;
+
+  insert into lines (id, act_id, scene_id, sort_order, content, created_at, author_id)
+  select gen_random_uuid(), p_act_id, s.id, 1, '', current_utc_time, v_user_id
+  from scenes s
+  where s.act_id = p_act_id;
+
   select jsonb_agg(jsonb_build_object(
       'id', s.id,
       'sort_order', s.sort_order,
@@ -47,17 +44,18 @@ BEGIN
           'act_id', l.act_id,
           'content', l.content
         ))
-        from inserted_lines l
+        from lines l
         where l.scene_id = s.id
       ),
       'concept', jsonb_build_object(
         'id', s.concept_id,
-        'code', r.code,
-        'concept', r.concept
+        'code', c.code,
+        'concept', c.concept
       )
-  )) into result_json
-  from inserted_scenes s
-  inner join random_concepts r on r.id = s.concept_id;
+  ) order by s.sort_order) into result_json
+  from scenes s
+  inner join view_card_concepts_details c on c.id = s.concept_id
+  where s.act_id = p_act_id;
 
   return result_json;
 

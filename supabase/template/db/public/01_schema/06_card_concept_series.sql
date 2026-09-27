@@ -9,3 +9,8 @@ create table public.card_concept_series (
 );
 
 ALTER TABLE "public"."card_concept_series" ENABLE ROW LEVEL SECURITY;
+
+create policy "Owner can manage own rows" on public.card_concept_series
+    for all to authenticated
+    using (author_id = (select auth.uid()))
+    with check (author_id = (select auth.uid()));

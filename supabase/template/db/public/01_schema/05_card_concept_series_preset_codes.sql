@@ -9,3 +9,7 @@ create table public.card_concept_series_preset_codes (
 );
 
 ALTER TABLE "public"."card_concept_series_preset_codes" ENABLE ROW LEVEL SECURITY;
+
+create policy "Authenticated users can read" on public.card_concept_series_preset_codes
+    for select to authenticated
+    using (true);

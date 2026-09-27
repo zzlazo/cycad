@@ -15,3 +15,12 @@ create table public.card_concepts (
 );
 
 ALTER TABLE "public"."card_concepts" ENABLE ROW LEVEL SECURITY;
+
+-- 外部キーの検査は RLS を通らないため、他人のシリーズにぶら下げられないよう親の所有者も確かめる
+create policy "Owner can manage own rows" on public.card_concepts
+    for all to authenticated
+    using (author_id = (select auth.uid()))
+    with check (
+        author_id = (select auth.uid())
+        and exists (select 1 from public.card_concept_series s where s.id = card_concepts.series_id and s.author_id = (select auth.uid()))
+    );

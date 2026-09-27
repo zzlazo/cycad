@@ -8,3 +8,7 @@ create table public.card_suits (
 );
 
 ALTER TABLE "public"."card_suits" ENABLE ROW LEVEL SECURITY;
+
+create policy "Authenticated users can read" on public.card_suits
+    for select to authenticated
+    using (true);
