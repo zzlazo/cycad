@@ -6,13 +6,13 @@ import "../../../../shared/presentation/icon_button/shared_icon_button.dart";
 import "../../../../shared/presentation/text_field/shared_text_field.dart";
 import "play_more_vert_button.dart";
 
-class PlayActFormScreenAppBar extends HookWidget
+class PlayEditableTitleAppBar extends HookWidget
     implements PreferredSizeWidget {
   final String title;
   final void Function(String newTitle)? onSaved;
   final void Function()? onDelete;
 
-  const PlayActFormScreenAppBar({
+  const PlayEditableTitleAppBar({
     super.key,
     required this.title,
     this.onSaved,

@@ -11,7 +11,7 @@ import "../../application/provider/play_provider.dart";
 import "../../model/request/play_request_model.dart";
 import "../component/delete_play_act_dialog.dart";
 import "../component/play_act_detail_form.dart";
-import "../component/play_act_form_screen_app_bar.dart";
+import "../component/play_editable_title_app_bar.dart";
 
 class PlayActFormScreenBase extends HookConsumerWidget {
   const PlayActFormScreenBase({
@@ -174,7 +174,7 @@ class PlayActFormScreenBase extends HookConsumerWidget {
     }
 
     return SharedBaseScreen(
-      appBar: PlayActFormScreenAppBar(
+      appBar: PlayEditableTitleAppBar(
         title: act.value.overview.title,
         onSaved: (newTitle) async {
           final oldState = act.value.copyWith();

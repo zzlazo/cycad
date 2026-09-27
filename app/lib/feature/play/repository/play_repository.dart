@@ -101,7 +101,7 @@ class PlayServerRepository implements PlayRepository {
   Future<void> updatePlay(UpdatePlayProjectRequest request) async {
     await _handle(() async {
       await _client.rpc(
-        ServerFunctions.rpcUpdateAct.functionName,
+        ServerFunctions.rpcUpdatePlay.functionName,
         params: request.toJson(),
       );
     }, "Error occurred while updating play project");
