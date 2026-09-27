@@ -27,6 +27,14 @@ class PlayLineForm extends HookWidget {
     final formController =
         textEditingController ?? useTextEditingController(text: line.content);
 
+    // useTextEditingController の text は初回しか使われないため、保存失敗で親が内容を巻き戻したときに入力欄へ反映する
+    useEffect(() {
+      if (formController.text != line.content) {
+        formController.text = line.content;
+      }
+      return null;
+    }, [line.content]);
+
     useEffect(() {
       void listener() {
         if (!focusNode.hasFocus) {

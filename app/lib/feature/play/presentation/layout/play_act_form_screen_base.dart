@@ -31,12 +31,12 @@ class PlayActFormScreenBase extends HookConsumerWidget {
     final pullSceneProvider = pullPlaySceneListProvider(actId);
     final formKey = useMemoized(() => GlobalKey<FormState>());
 
-    Future<void> onLineCreated(
+    Future<AsyncJobResult<void>> onLineCreated(
       String newLineId,
       int sortOrder,
       String content,
-    ) async {
-      await ref
+    ) {
+      return ref
           .read(asyncJobDispatcherProvider)
           .trackJob<void>(
             AsyncJobQueue(
@@ -59,8 +59,8 @@ class PlayActFormScreenBase extends HookConsumerWidget {
           );
     }
 
-    Future<void> onLineSaved(String lineId, String content) async {
-      await ref
+    Future<AsyncJobResult<void>> onLineSaved(String lineId, String content) {
+      return ref
           .read(asyncJobDispatcherProvider)
           .trackJob<void>(
             AsyncJobQueue(
@@ -78,8 +78,8 @@ class PlayActFormScreenBase extends HookConsumerWidget {
           );
     }
 
-    Future<void> onLineDelete(String lineId) async {
-      await ref
+    Future<AsyncJobResult<void>> onLineDelete(String lineId) {
+      return ref
           .read(asyncJobDispatcherProvider)
           .trackJob<void>(
             AsyncJobQueue(
@@ -95,45 +95,65 @@ class PlayActFormScreenBase extends HookConsumerWidget {
           );
     }
 
-    Future<void> onActLineCreated(int sortOrder) async {
-      final oldState = act.value.copyWith();
+    // 書き込みはキューで順に処理されるため、失敗が分かった時点で後続の編集が画面に反映済みのことがある。
+    // 操作前の状態を丸ごと戻すとそれらまで消えるので、失敗した操作の対象の行だけを戻す。
+    void updateActLines(void Function(Map<String, PlayLine> lines) update) {
       final Map<String, PlayLine> newLines = Map.from(act.value.lines);
-      final newLineId = ref.read(uuidProvider).v4();
-      newLines[newLineId] = PlayLine(
-        id: newLineId,
-        sortOrder: sortOrder,
-        actId: actId,
-        content: "",
-      );
+      update(newLines);
       act.value = act.value.copyWith(lines: newLines);
-      try {
-        await onLineCreated(newLineId, sortOrder, "");
-      } catch (error) {
-        act.value = oldState;
+    }
+
+    void updateSceneLines(
+      String sceneId,
+      void Function(Map<String, PlayLine> lines) update,
+    ) {
+      final scene = act.value.scenes[sceneId];
+      if (scene == null) return;
+      final Map<String, PlayLine> newLines = Map.from(scene.lines);
+      update(newLines);
+      final Map<String, PlayScene> newScenes = Map.from(act.value.scenes);
+      newScenes[sceneId] = scene.copyWith(lines: newLines);
+      act.value = act.value.copyWith(scenes: newScenes);
+    }
+
+    Future<void> onActLineCreated(int sortOrder) async {
+      final newLineId = ref.read(uuidProvider).v4();
+      updateActLines(
+        (lines) => lines[newLineId] = PlayLine(
+          id: newLineId,
+          sortOrder: sortOrder,
+          actId: actId,
+          content: "",
+        ),
+      );
+      final result = await onLineCreated(newLineId, sortOrder, "");
+      if (result is AsyncJobFailure) {
+        updateActLines((lines) => lines.remove(newLineId));
       }
     }
 
     Future<void> onActLineSaved(String lineId, String content) async {
-      final oldState = act.value.copyWith();
-      final Map<String, PlayLine> newLines = Map.from(act.value.lines);
-      newLines[lineId] = newLines[lineId]!.copyWith(content: content);
-      act.value = act.value.copyWith(lines: newLines);
-      try {
-        await onLineSaved(lineId, content);
-      } catch (error) {
-        act.value = oldState;
+      final oldLine = act.value.lines[lineId];
+      // blur のたびに呼ばれるため、変化がなければ送らない
+      if (oldLine == null || oldLine.content == content) return;
+      updateActLines(
+        (lines) => lines[lineId] = oldLine.copyWith(content: content),
+      );
+      final result = await onLineSaved(lineId, content);
+      if (result is AsyncJobFailure) {
+        updateActLines((lines) {
+          if (lines.containsKey(lineId)) lines[lineId] = oldLine;
+        });
       }
     }
 
     Future<void> onActLineDelete(String lineId) async {
-      final oldState = act.value.copyWith();
-      final Map<String, PlayLine> newLines = Map.from(act.value.lines);
-      newLines.remove(lineId);
-      act.value = act.value.copyWith(lines: newLines);
-      try {
-        await onLineDelete(lineId);
-      } catch (error) {
-        act.value = oldState;
+      final oldLine = act.value.lines[lineId];
+      if (oldLine == null) return;
+      updateActLines((lines) => lines.remove(lineId));
+      final result = await onLineDelete(lineId);
+      if (result is AsyncJobFailure) {
+        updateActLines((lines) => lines[lineId] = oldLine);
       }
     }
 
@@ -142,34 +162,28 @@ class PlayActFormScreenBase extends HookConsumerWidget {
       String lineId,
       String content,
     ) async {
-      final oldState = act.value.copyWith();
-      final Map<String, PlayScene> newScenes = Map.from(act.value.scenes);
-      final Map<String, PlayLine> newLines = Map.from(
-        newScenes[sceneId]!.lines,
+      final oldLine = act.value.scenes[sceneId]?.lines[lineId];
+      // blur のたびに呼ばれるため、変化がなければ送らない
+      if (oldLine == null || oldLine.content == content) return;
+      updateSceneLines(
+        sceneId,
+        (lines) => lines[lineId] = oldLine.copyWith(content: content),
       );
-      newLines[lineId] = newLines[lineId]!.copyWith(content: content);
-      newScenes[sceneId] = newScenes[sceneId]!.copyWith(lines: newLines);
-      act.value = act.value.copyWith(scenes: newScenes);
-      try {
-        await onLineSaved(lineId, content);
-      } catch (error) {
-        act.value = oldState;
+      final result = await onLineSaved(lineId, content);
+      if (result is AsyncJobFailure) {
+        updateSceneLines(sceneId, (lines) {
+          if (lines.containsKey(lineId)) lines[lineId] = oldLine;
+        });
       }
     }
 
     Future<void> onSceneLineDeleted(String sceneId, String lineId) async {
-      final oldState = act.value.copyWith();
-      final Map<String, PlayScene> newScenes = Map.from(act.value.scenes);
-      final Map<String, PlayLine> newLines = Map.from(
-        newScenes[sceneId]!.lines,
-      );
-      newLines.remove(lineId);
-      newScenes[sceneId] = newScenes[sceneId]!.copyWith(lines: newLines);
-      act.value = act.value.copyWith(scenes: newScenes);
-      try {
-        await onLineDelete(lineId);
-      } catch (error) {
-        act.value = oldState;
+      final oldLine = act.value.scenes[sceneId]?.lines[lineId];
+      if (oldLine == null) return;
+      updateSceneLines(sceneId, (lines) => lines.remove(lineId));
+      final result = await onLineDelete(lineId);
+      if (result is AsyncJobFailure) {
+        updateSceneLines(sceneId, (lines) => lines[lineId] = oldLine);
       }
     }
 
@@ -177,28 +191,29 @@ class PlayActFormScreenBase extends HookConsumerWidget {
       appBar: PlayEditableTitleAppBar(
         title: act.value.overview.title,
         onSaved: (newTitle) async {
-          final oldState = act.value.copyWith();
+          final oldTitle = act.value.overview.title;
           act.value = act.value.copyWith(
             overview: act.value.overview.copyWith(title: newTitle),
           );
-          try {
-            await ref
-                .read(asyncJobDispatcherProvider)
-                .trackJob<void>(
-                  AsyncJobQueue(
-                    id: "update_play_act_$actId",
-                    type: AsyncJobType.modify,
-                    job: () async {
-                      await ref
-                          .read(playRepositoryProvider)
-                          .updateAct(
-                            UpdatePlayActRequest(actId: actId, title: newTitle),
-                          );
-                    },
-                  ),
-                );
-          } catch (error) {
-            act.value = oldState;
+          final result = await ref
+              .read(asyncJobDispatcherProvider)
+              .trackJob<void>(
+                AsyncJobQueue(
+                  id: "update_play_act_$actId",
+                  type: AsyncJobType.modify,
+                  job: () async {
+                    await ref
+                        .read(playRepositoryProvider)
+                        .updateAct(
+                          UpdatePlayActRequest(actId: actId, title: newTitle),
+                        );
+                  },
+                ),
+              );
+          if (result is AsyncJobFailure) {
+            act.value = act.value.copyWith(
+              overview: act.value.overview.copyWith(title: oldTitle),
+            );
           }
         },
         onDelete: () async {
