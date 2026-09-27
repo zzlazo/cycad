@@ -20,13 +20,13 @@ BEGIN
   where id = p_play_id;
 
   with inserted_act as (
-    INSERT INTO acts
-    VALUES (current_utc_time, p_title, p_sort_order, v_user_id, current_utc_time, p_act_id, p_play_id)
+    INSERT INTO acts (id, play_id, title, sort_order, author_id, created_at, updated_at)
+    VALUES (p_act_id, p_play_id, p_title, p_sort_order, v_user_id, current_utc_time, current_utc_time)
     returning id, title, play_id, sort_order, updated_at
   ),
   inserted_line as (
-    INSERT INTO lines
-    values (current_utc_time, 1, '', v_user_id, gen_random_uuid(), p_act_id, null, current_utc_time)
+    INSERT INTO lines (id, act_id, scene_id, sort_order, content, author_id, created_at, updated_at)
+    VALUES (gen_random_uuid(), p_act_id, null, 1, '', v_user_id, current_utc_time, current_utc_time)
     returning id, content, act_id, scene_id, sort_order
   )
   SELECT jsonb_build_object(

@@ -20,11 +20,5 @@ BEGIN
   updated_at = current_utc_time
   where id = update_act_id;
 
-  if update_scene_id IS NOT NULL THEN
-    UPDATE scenes set
-    updated_at = current_utc_time
-    where id = update_scene_id;
-  END IF;
-
 END;
 $$ LANGUAGE plpgsql;

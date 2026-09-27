@@ -6,7 +6,8 @@ DECLARE
 BEGIN
   update plays set
   title = p_title,
-  updated_at = current_utc_time;
+  updated_at = current_utc_time
+  where id = p_play_id;
 
 END;
 $$ LANGUAGE plpgsql;
